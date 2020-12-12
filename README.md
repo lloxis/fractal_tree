@@ -1,5 +1,5 @@
 # Fractal tree generator
-![Alt text](relative/path/to/tree.jpg?raw=true "Title")
+![Alt text](relative/path/to/tree_example.jpg?raw=true "Title")
 Play around with the tree parameters to create all different types of fractal tree.
 
 ### Exe setup
