@@ -1,5 +1,5 @@
 # Fractal tree generator
-![Alt text](relative/path/to/tree_example.jpg?raw=true "Title")
+![alt text](https://github.com/lloxis/fractal_tree/blob/main/tree_example.png)
 Play around with the tree parameters to create all different types of fractal tree.
 
 ### Exe setup
