@@ -2,7 +2,7 @@
 
 Play around with the tree parameters to create all different types of fractal tree.
 
-## Exe setup
+### Exe setup
 Put the exe file on an empty folder. The first startup can be a little bit long.
 
 ### Window parameters
