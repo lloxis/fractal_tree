@@ -2,8 +2,10 @@
 ![alt text](https://github.com/lloxis/fractal_tree/blob/main/tree_example.png)
 Play around with the tree parameters to create all different types of fractal tree.
 
-### Exe setup
-Put the exe file on an empty folder. The first startup can be a little bit long.
+### Lauching the app
+You can just put the exe file on an empty folder and run it. The first startup can be a little bit long.
+
+You can also run the python code by executing the main.py file. You will need to have tkinter and pygame libraries installed on your computer.
 
 ### Window parameters
 The win_params.json file let you change the default height and width of the window. When you make a change on this file save it and relaunch the app to see the changes. Please notice that this is just the default window resolution, you can resize the window whenever you want and wait for the tree to be regenerated.
