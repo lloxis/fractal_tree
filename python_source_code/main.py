@@ -66,11 +66,6 @@ def draw_tree():
 tree_options_changed = True
 
 def generate_tree():
-    global tree_options_changed
-
-    if not tree_options_changed:
-        return
-
     # update all tree options
     tree_json_manager.datas["regenerate_tree"] = regenerate_tree_button_value.get()
     tree_json_manager.datas["branches_nb"] = branches_nb_scale.get()
@@ -231,8 +226,9 @@ while run:
 
             # we put back the tkinter param window
             root.lift()
-
-    generate_tree()
+    
+    if tree_options_changed:
+        generate_tree()
 
     # if tk window not destroyed, keep updating it
     if not tk_win_destroyed:
