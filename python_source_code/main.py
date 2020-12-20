@@ -21,7 +21,7 @@ default_tree_params = {
     "thickness_dividor": 1.28,
     "tree_color": ((255, 255, 255), "#ffffff"),
     "background_color": ((0, 0, 0), "#000000"),
-    "animate_generation": True
+    "animate_generation": False
 }
 tree_json_manager = json_data_file_manager.manager("tree_params.json", default_tree_params)
 
@@ -51,10 +51,7 @@ main_frame.pack()
 # create a tree with the params from tree_params.json
 fractal_tree1 = tree(tree_json_manager.datas, root)
 
-first_generation = True
-
 def draw_tree():
-    global first_generation
     """
     draw the tree on the screen
     and continue to update windows while generating
@@ -66,12 +63,12 @@ def draw_tree():
 
     pygame.display.flip()
 
-    first_generation = False
+tree_options_changed = True
 
+def generate_tree():
+    global tree_options_changed
 
-def generate_tree(from_scale=False):
-    global first_generation
-    if from_scale and (first_generation or not regenerate_tree_button_value.get()):
+    if not tree_options_changed:
         return
 
     # update all tree options
@@ -86,45 +83,52 @@ def generate_tree(from_scale=False):
     tree_json_manager.datas["thickness_dividor"] = thickness_dividor_scale.get()
     tree_json_manager.datas["animate_generation"] = animate_generation_button_value.get()
 
-    fractal_tree1.options = tree_json_manager.datas
+    fractal_tree1.params = tree_json_manager.datas
 
     win_surface.fill(tree_json_manager.datas["background_color"][0])
     draw_tree()
+
+    tree_options_changed = False
+
+# we don't regenerate the tree each time we move a slider to avoid lag
+def tree_options_change(event_=None):
+    global tree_options_changed
+    tree_options_changed = True
 
 
 regenerate_tree_button_value = IntVar(value=tree_json_manager.datas["regenerate_tree"])
 regenerate_tree_button = Checkbutton(main_frame, text='Regenerate tree when a parameter is changed', variable=regenerate_tree_button_value, command=generate_tree)
 regenerate_tree_button.pack(pady=2)
 
-branches_nb_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1, to=10, resolution=1, length=260, label='Branches Number')
+branches_nb_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1, to=10, resolution=1, length=260, label='Branches Number')
 branches_nb_scale.set(tree_json_manager.datas["branches_nb"])
 branches_nb_scale.pack(pady=2)
 
-trunk_length_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1, to=500, resolution=1, length=260, label='Trunk Length')
+trunk_length_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1, to=500, resolution=1, length=260, label='Trunk Length')
 trunk_length_scale.set(tree_json_manager.datas["trunk_length"])
 trunk_length_scale.pack(pady=2)
 
-additional_trunk_length_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=0, to=500, resolution=1, length=260, label='Additional trunk length')
+additional_trunk_length_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=0, to=500, resolution=1, length=260, label='Additional trunk length')
 additional_trunk_length_scale.set(tree_json_manager.datas["additional_trunk_length"])
 additional_trunk_length_scale.pack(pady=2)
 
-length_dividor_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1.2, to=2.5, resolution=0.01, length=260, label='Length dividor')
+length_dividor_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1.2, to=2.5, resolution=0.01, length=260, label='Length dividor')
 length_dividor_scale.set(tree_json_manager.datas["length_dividor"])
 length_dividor_scale.pack(pady=2)
 
-branch_min_size_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=2, to=100, resolution=1, length=260, label='Branches min size')
+branch_min_size_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=2, to=100, resolution=1, length=260, label='Branches min size')
 branch_min_size_scale.set(tree_json_manager.datas["branch_min_size"])
 branch_min_size_scale.pack(pady=2)
 
-semi_angle_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1, to=360, resolution=1, length=260, label='Semi angle scale')
+semi_angle_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1, to=360, resolution=1, length=260, label='Semi angle scale')
 semi_angle_scale.set(tree_json_manager.datas["semi_angle"])
 semi_angle_scale.pack(pady=2)
 
-trunk_thickness_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1, to=40, resolution=1, length=260, label='Trunck thickness scale')
+trunk_thickness_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1, to=40, resolution=1, length=260, label='Trunck thickness scale')
 trunk_thickness_scale.set(tree_json_manager.datas["trunk_thickness"])
 trunk_thickness_scale.pack(pady=2)
 
-thickness_dividor_scale = Scale(main_frame, orient='horizontal', command=lambda event_: generate_tree(True), from_=1.2, to=2.5, resolution=0.01, length=260, label='Thickness Dividor')
+thickness_dividor_scale = Scale(main_frame, orient='horizontal', command=tree_options_change, from_=1.2, to=2.5, resolution=0.01, length=260, label='Thickness Dividor')
 thickness_dividor_scale.set(tree_json_manager.datas["thickness_dividor"])
 thickness_dividor_scale.pack(pady=2)
 
@@ -133,14 +137,14 @@ animate_generation_button = Checkbutton(main_frame, text='Animated generation', 
 animate_generation_button.pack(pady=2)
 
 def change_tree_color():
-    tree_color = tkinter.colorchooser.askcolor(fractal_tree1.options["tree_color"][1])
+    tree_color = tkinter.colorchooser.askcolor(fractal_tree1.params["tree_color"][1])
 
     # if we clicked on "annuler"
     if tree_color==(None, None):
         return
 
     tree_json_manager.datas["tree_color"] = tree_color
-    fractal_tree1.options["tree_color"] = tree_color
+    fractal_tree1.params["tree_color"] = tree_color
     generate_tree()
 tree_color_button = Button(main_frame, text="Change tree color", command=change_tree_color)
 tree_color_button.pack()
@@ -171,7 +175,7 @@ save_button.pack()
 def reset_params():
     # deep copy to really copy default_tree_params dict and not overright it
     tree_json_manager.datas = copy.deepcopy(default_tree_params)
-    fractal_tree1.options = tree_json_manager.datas
+    fractal_tree1.params = tree_json_manager.datas
 
     regenerate_tree_button_value.set(default_tree_params["regenerate_tree"])
     branches_nb_scale.set(default_tree_params["branches_nb"])
@@ -222,11 +226,13 @@ while run:
         elif event_type == pygame.VIDEORESIZE:
             win_size = win_width, win_height = event.w, event.h
             win_surface = pygame.display.set_mode(win_size, pygame.RESIZABLE)
-            win_surface.fill(fractal_tree1.options["background_color"][0])
+            win_surface.fill(fractal_tree1.params["background_color"][0])
             draw_tree()
 
             # we put back the tkinter param window
             root.lift()
+
+    generate_tree()
 
     # if tk window not destroyed, keep updating it
     if not tk_win_destroyed:
@@ -236,4 +242,4 @@ while run:
             pass
 
     # wait a little to do not update to clickly
-    time.sleep(1/150)
+    time.sleep(1/100)
