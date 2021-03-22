@@ -66,6 +66,7 @@ def draw_tree():
 tree_options_changed = True
 
 def generate_tree():
+    global tree_options_changed
     # update all tree options
     tree_json_manager.datas["regenerate_tree"] = regenerate_tree_button_value.get()
     tree_json_manager.datas["branches_nb"] = branches_nb_scale.get()
